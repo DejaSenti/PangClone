@@ -10,6 +10,7 @@ public class DefaultProjectile : Projectile
         base.Activate();
 
         transform.localScale = Vector3.one;
+        transform.rotation = Quaternion.identity;
     }
 
     private void Update()

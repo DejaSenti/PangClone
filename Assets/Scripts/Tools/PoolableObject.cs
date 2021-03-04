@@ -2,6 +2,13 @@
 
 public abstract class PoolableObject : MonoBehaviour
 {
-    public abstract void Activate();
-    public abstract void Deactivate();
+    public virtual void Activate()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public virtual void Deactivate()
+    {
+        gameObject.SetActive(false);
+    }
 }

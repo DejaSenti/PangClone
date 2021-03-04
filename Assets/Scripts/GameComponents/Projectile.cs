@@ -12,16 +12,6 @@ public abstract class Projectile : PoolableObject
         }
     }
 
-    public override void Activate()
-    {
-        gameObject.SetActive(true);
-    }
-
-    public override void Deactivate()
-    {
-        gameObject.SetActive(false);
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         DestroyedEvent.Invoke(this);

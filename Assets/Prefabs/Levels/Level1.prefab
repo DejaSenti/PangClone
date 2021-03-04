@@ -457,6 +457,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Floor
       objectReference: {fileID: 0}
+    - target: {fileID: 4685804100527353639, guid: 29d0ea08830eb5e4cb12f635d3a18d19,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29d0ea08830eb5e4cb12f635d3a18d19, type: 3}
 --- !u!4 &4329048705371451890 stripped
@@ -476,6 +481,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BallSpawnPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 5034883468809103490, guid: a4b634456ed88e84aa64b74f4b2e88d2,
+        type: 3}
+      propertyPath: InitialBallSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5034883468809103490, guid: a4b634456ed88e84aa64b74f4b2e88d2,
+        type: 3}
+      propertyPath: InitialDirection.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5034883468809103490, guid: a4b634456ed88e84aa64b74f4b2e88d2,
+        type: 3}
+      propertyPath: InitialDirection.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5034883468809103490, guid: a4b634456ed88e84aa64b74f4b2e88d2,
+        type: 3}
+      propertyPath: InitialBallColour.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5079306927623617616, guid: a4b634456ed88e84aa64b74f4b2e88d2,
         type: 3}

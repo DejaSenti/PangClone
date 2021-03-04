@@ -6,6 +6,11 @@ public class PlayerController : MonoBehaviour
     public Gun Gun;
     public KeyboardPlayerInput PlayerInput;
 
+    private void Awake()
+    {
+        Gun.Initialize();
+    }
+
     private void Update()
     {
         var inputMovementDirection = PlayerInput.GetMovementDirection();

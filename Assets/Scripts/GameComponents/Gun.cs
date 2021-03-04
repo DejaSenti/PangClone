@@ -1,7 +1,58 @@
-﻿public class Gun
+﻿using UnityEngine;
+
+public class Gun : MonoBehaviour
 {
+    public int BulletLimit;
+
+    [SerializeField]
+    private GameObject projectile;
+
+    private ObjectPool<Projectile> pool;
+
+    private void Awake()
+    {
+        if (projectile.GetComponentInChildren<Projectile>() == null)
+        {
+            Debug.LogError("Assigned projectile doesn't have valid projectile component.");
+        }
+    }
+
+    public void Initialize()
+    {
+        if (pool == null)
+        {
+            pool = new ObjectPool<Projectile>(projectile);
+        }
+
+        pool.Initialize(BulletLimit);
+    }
+
     public void Shoot()
     {
+        var projectile = pool.Acquire();
 
+        if (projectile == null)
+            return;
+
+        projectile.transform.localPosition = transform.position;
+
+        projectile.DestroyedEvent.AddListener(OnProjectileDestroyed);
+    }
+
+    private void OnProjectileDestroyed(Projectile projectile)
+    {
+        projectile.DestroyedEvent.RemoveListener(OnProjectileDestroyed);
+        pool.Release(projectile);
+    }
+
+    public void Terminate()
+    {
+        var allProjectiles = pool.GetAllPooledObjects();
+        foreach(Projectile projectile in allProjectiles)
+        {
+            projectile.DestroyedEvent.RemoveListener(OnProjectileDestroyed);
+        }
+
+        pool.Terminate();
     }
 }

@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
     public PlayerID PlayerID;
+
+    public UnityEvent HitEvent;
 
     public Rigidbody2D RB;
 
@@ -10,6 +13,22 @@ public class Player : MonoBehaviour
     public float MaxSpeed;
 
     public float DecelerationMultiplier;
+
+    private void Awake()
+    {
+        if (HitEvent == null)
+        {
+            HitEvent = new UnityEvent();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.tag == ComponentTagNames.BALL)
+        {
+            HitEvent.Invoke();
+        }
+    }
 
     public void Move(MovementDirection direction)
     {

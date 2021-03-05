@@ -46,9 +46,9 @@ public class Ball : PoolableObject
         RB.velocity = velocity;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collision.gameObject.tag == ComponentTagNames.PROJECTILE)
+        if (collider.tag == ComponentTagNames.PROJECTILE)
         {
             BallCollisionEvent.Invoke(this);
         }

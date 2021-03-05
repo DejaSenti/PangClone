@@ -145,13 +145,13 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &9188483511493465921
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7522d9019a6c1804db1a3e1586e6a724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerID: 0
+  ID: 0
   RB: {fileID: 9188483511493465920}
   Gun: {fileID: 9188483511193195281}
   Acceleration: 50

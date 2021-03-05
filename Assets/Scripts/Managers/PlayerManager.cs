@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -76,7 +75,7 @@ public class PlayerManager : MonoBehaviour
     {
         foreach (PlayerSpawnPoint spawnPoint in playerSpawnPoints)
         {
-            if (!playerControllersByID.ContainsKey(spawnPoint.PlayerID) || playerLivesByID[spawnPoint.PlayerID] == 0)
+            if (!playerControllersByID.ContainsKey(spawnPoint.PlayerID) || playerLivesByID[spawnPoint.PlayerID] <= 0)
                 continue;
 
             var controller = playerControllersByID[spawnPoint.PlayerID];
@@ -99,19 +98,22 @@ public class PlayerManager : MonoBehaviour
 
     private void OnTimerElapsed()
     {
+        gameTimer.TimerElapsedEvent.RemoveListener(OnTimerElapsed);
+
         var keys = new List<PlayerID>(playerLivesByID.Keys);
         foreach(var key in keys)
         {
             DecrementPlayerLives(key);
         }
 
-        EndLevel();
+        PlayerDeathEvent.Invoke();
     }
 
     private void OnPlayerHit(PlayerID playerID)
     {
         DecrementPlayerLives(playerID);
-        EndLevel();
+
+        PlayerDeathEvent.Invoke();
     }
 
     private void DecrementPlayerLives(PlayerID playerID)
@@ -124,24 +126,10 @@ public class PlayerManager : MonoBehaviour
     {
         gameTimer.TimerElapsedEvent.RemoveListener(OnTimerElapsed);
 
-        bool gameOver = true;
-
         foreach (var key in playerControllersByID.Keys)
         {
             playerControllersByID[key].Player.HitEvent.RemoveListener(OnPlayerHit);
             playerControllersByID[key].DeactivatePlayer();
-
-            if (playerLivesByID[key] > 0)
-                gameOver = false;
-        }
-
-        if (gameOver)
-        {
-            LivesOverEvent.Invoke();
-        }
-        else
-        {
-            PlayerDeathEvent.Invoke();
         }
     }
 }

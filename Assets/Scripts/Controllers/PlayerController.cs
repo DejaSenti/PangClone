@@ -32,6 +32,9 @@ public class PlayerController
 
     public void Update()
     {
+        if (!Player.isActiveAndEnabled)
+            return;
+
         var inputMovementDirection = playerInput.GetMovementDirection();
 
         Player.Move(inputMovementDirection);

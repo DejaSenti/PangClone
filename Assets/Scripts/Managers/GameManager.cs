@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Timer))]
 public class GameManager : MonoBehaviour
 {
     public static int Level;
+    public static bool IsGameRunning;
 
     private GameObject currentLevel;
 
@@ -13,6 +15,8 @@ public class GameManager : MonoBehaviour
     private BallManager ballManager;
     [SerializeField]
     private ScoreManager scoreManager;
+    [SerializeField]
+    private OverlayController overlayController;
     [SerializeField]
     private View view;
     [SerializeField]
@@ -26,16 +30,13 @@ public class GameManager : MonoBehaviour
 
     public void StartNewGame()
     {
+        IsGameRunning = false;
+
         Level = 1;
 
         InitializeLevel(Level);
 
-        StartLevel();
-    }
-
-    private void Update()
-    {
-        view.UpdateTimer(timer.RoundTimeLeft);
+        AnnounceAndWaitForStartLevel();
     }
 
     private void InitializeLevel(int level)
@@ -46,7 +47,8 @@ public class GameManager : MonoBehaviour
 
         if (levelGO == null)
         {
-            Debug.Log("Couldn't load level.");
+            overlayController.AnnounceGameOver();
+            overlayController.AnnouncementOverEvent.AddListener(OnGameOverAnnouncementOver);
             return;
         }
 
@@ -57,6 +59,19 @@ public class GameManager : MonoBehaviour
         playerManager.InitializeLevel(currentLevel);
     }
 
+    private void AnnounceAndWaitForStartLevel()
+    {
+        overlayController.AnnounceGameStart();
+        overlayController.AnnouncementOverEvent.AddListener(OnLevelStartAnnouncementOver);
+    }
+
+    private void OnLevelStartAnnouncementOver()
+    {
+        overlayController.AnnouncementOverEvent.RemoveListener(OnLevelStartAnnouncementOver);
+
+        StartLevel();
+    }
+
     private void StartLevel()
     {
         ballManager.StartLevel();
@@ -65,40 +80,70 @@ public class GameManager : MonoBehaviour
         timer.StartTimer(GameData.MAX_GAME_TIME);
 
         AddListeners();
+
+        IsGameRunning = true;
+    }
+
+    private void OnTimerElapsed()
+    {
+        EndCurrentLevel();
+
+        overlayController.AnnounceTimeUp();
+        overlayController.AnnouncementOverEvent.AddListener(OnRoundOverAnnouncementOver);
     }
 
     private void OnPlayerDeath()
     {
-        RemoveListeners();
+        EndCurrentLevel();
 
-        StartLevel();
+        overlayController.AnnouncePlayerDeath();
+        overlayController.AnnouncementOverEvent.AddListener(OnRoundOverAnnouncementOver);
     }
 
     private void OnLivesOver()
     {
-        RemoveListeners();
-        Debug.Log("Game Over.");
+        EndCurrentLevel();
+
+        overlayController.AnnounceGameOver();
+        overlayController.AnnouncementOverEvent.AddListener(OnGameOverAnnouncementOver);
     }
 
     private void OnAllBallsDestroyed()
     {
-        RemoveListeners();
-
         Level++;
         EndCurrentLevel();
+
+        overlayController.AnnounceLevelClear();
+        overlayController.AnnouncementOverEvent.AddListener(OnRoundOverAnnouncementOver);
+
         InitializeLevel(Level);
-        StartLevel();
+    }
+
+    private void OnRoundOverAnnouncementOver()
+    {
+        overlayController.AnnouncementOverEvent.RemoveListener(OnRoundOverAnnouncementOver);
+        AnnounceAndWaitForStartLevel();
+    }
+
+    private void OnGameOverAnnouncementOver()
+    {
+        overlayController.AnnouncementOverEvent.RemoveListener(OnGameOverAnnouncementOver);
+        SceneManager.LoadScene(GameScenes.MAIN_MENU);
     }
 
     private void EndCurrentLevel()
     {
+        IsGameRunning = false;
+
+        RemoveListeners();
+
         playerManager.EndLevel();
         ballManager.EndLevel();
-        Destroy(currentLevel);
     }
 
     private void AddListeners()
     {
+        timer.TimerElapsedEvent.AddListener(OnTimerElapsed);
         playerManager.LivesOverEvent.AddListener(OnLivesOver);
         playerManager.PlayerDeathEvent.AddListener(OnPlayerDeath);
         ballManager.AllBallsDestroyedEvent.AddListener(OnAllBallsDestroyed);
@@ -106,9 +151,15 @@ public class GameManager : MonoBehaviour
 
     private void RemoveListeners()
     {
+        timer.TimerElapsedEvent.RemoveListener(OnTimerElapsed);
         playerManager.LivesOverEvent.RemoveListener(OnLivesOver);
         playerManager.PlayerDeathEvent.RemoveListener(OnPlayerDeath);
         ballManager.AllBallsDestroyedEvent.RemoveListener(OnAllBallsDestroyed);
+    }
+
+    private void Update()
+    {
+        view.UpdateTimer(timer.RoundTimeLeft);
     }
 
     [ContextMenu("Test Game")]

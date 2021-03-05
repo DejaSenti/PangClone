@@ -32,10 +32,7 @@ public class BallManager : MonoBehaviour
     {
         ballSpawnPoints = level.GetComponentsInChildren<BallSpawnPoint>();
 
-        if (pool == null)
-        {
-            pool = new ObjectPool<Ball>(ballPrefab);
-        }
+        pool = new ObjectPool<Ball>(ballPrefab);
 
         int poolSize = 0;
 
@@ -116,6 +113,6 @@ public class BallManager : MonoBehaviour
             ball.BallCollisionEvent.RemoveListener(OnBallCollision);
         }
 
-        pool.Terminate();
+        pool.ReleaseAll();
     }
 }

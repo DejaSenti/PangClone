@@ -8,10 +8,10 @@ public class PlayerController
 
     public PlayerController(Player player, IPlayerInput playerInput)
     {
-        this.Player = player;
+        Player = player;
         this.playerInput = playerInput;
 
-        this.Player.Gun.Initialize();
+        Player.Gun.Initialize();
     }
 
     public void SetPlayerPosition(Vector3 position)
@@ -27,6 +27,7 @@ public class PlayerController
     public void DeactivatePlayer()
     {
         Player.gameObject.SetActive(false);
+        Player.Gun.Reset();
     }
 
     public void Update()

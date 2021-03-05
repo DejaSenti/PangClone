@@ -10,12 +10,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     private GameObject playerPrefab;
 
-    // debug only!!!
-    [SerializeField]
-    private GameObject level;
-    [SerializeField]
-    private Timer timer;
-
     private PlayerSpawnPoint[] playerSpawnPoints;
     private Dictionary<PlayerID, PlayerController> playerControllersByID;
     private Dictionary<PlayerID, int> playerLivesByID;
@@ -68,11 +62,14 @@ public class PlayerManager : MonoBehaviour
         this.gameTimer = gameTimer;
     }
 
-    public void StartLevel(GameObject level)
+    public void InitializeLevel(GameObject level)
     {
         playerSpawnPoints = level.GetComponentsInChildren<PlayerSpawnPoint>();
+    }
 
-        foreach(PlayerSpawnPoint spawnPoint in playerSpawnPoints)
+    public void StartLevel()
+    {
+        foreach (PlayerSpawnPoint spawnPoint in playerSpawnPoints)
         {
             if (!playerControllersByID.ContainsKey(spawnPoint.PlayerID) || playerLivesByID[spawnPoint.PlayerID] == 0)
                 continue;
@@ -113,7 +110,7 @@ public class PlayerManager : MonoBehaviour
         EndLevel();
     }
 
-    private void EndLevel()
+    public void EndLevel()
     {
         gameTimer.TimerElapsedEvent.RemoveListener(OnTimerElapsed);
 
@@ -136,13 +133,5 @@ public class PlayerManager : MonoBehaviour
         {
             PlayerDeathEvent.Invoke();
         }
-    }
-
-    [ContextMenu("Test Level")]
-    public void TestLevel()
-    {
-        Initialize(timer, 4);
-        timer.StartTimer(100);
-        StartLevel(level);
     }
 }

@@ -45,6 +45,11 @@ public class Gun : MonoBehaviour
         pool.Release(projectile);
     }
 
+    public void Reset()
+    {
+        pool.ReleaseAll();
+    }
+
     public void Terminate()
     {
         var allProjectiles = pool.GetAllPooledObjects();

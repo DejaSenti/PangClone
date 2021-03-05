@@ -3,12 +3,12 @@ using UnityEngine.Events;
 
 public class BallManager : MonoBehaviour
 {
+    public static ScoreEvent ScoreEvent;
+
     public UnityEvent AllBallsDestroyedEvent;
 
     [SerializeField]
     private GameObject ballPrefab;
-    [SerializeField]
-    private GameObject level;
     [SerializeField]
     private float ballSpeedOnSplit;
 
@@ -21,12 +21,15 @@ public class BallManager : MonoBehaviour
         {
             AllBallsDestroyedEvent = new UnityEvent();
         }
+
+        if (ScoreEvent == null)
+        {
+            ScoreEvent = new ScoreEvent();
+        }
     }
 
-    public void Initialize(GameObject level)
+    public void InitializeLevel(GameObject level)
     {
-        this.level = level;
-
         ballSpawnPoints = level.GetComponentsInChildren<BallSpawnPoint>();
 
         if (pool == null)
@@ -47,6 +50,11 @@ public class BallManager : MonoBehaviour
 
     public void StartLevel()
     {
+        if (pool.ActiveCount > 0)
+        {
+            pool.ReleaseAll();
+        }
+
         foreach(BallSpawnPoint spawnPoint in ballSpawnPoints)
         {
             var ball = pool.Acquire();
@@ -98,7 +106,7 @@ public class BallManager : MonoBehaviour
         }
     }
 
-    public void Terminate()
+    public void EndLevel()
     {
         var poolObjects = pool.GetAllPooledObjects();
         foreach (var ball in poolObjects)
@@ -107,12 +115,5 @@ public class BallManager : MonoBehaviour
         }
 
         pool.Terminate();
-    }
-
-    [ContextMenu("Test Level")]
-    public void TestLevel()
-    {
-        Initialize(level);
-        StartLevel();
     }
 }

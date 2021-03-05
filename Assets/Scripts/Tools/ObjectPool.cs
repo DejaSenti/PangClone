@@ -81,4 +81,14 @@ public class ObjectPool<T> where T : PoolableObject
 
         existingObject.Deactivate();
     }
+
+    public void ReleaseAll()
+    {
+        var allObjects = GetAllPooledObjects();
+
+        foreach(var pooledObject in allObjects)
+        {
+            Release(pooledObject);
+        }
+    }
 }

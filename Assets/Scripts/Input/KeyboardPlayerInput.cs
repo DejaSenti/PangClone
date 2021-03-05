@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 
-public class KeyboardPlayerInput : MonoBehaviour, IPlayerInput
+public class KeyboardPlayerInput : IPlayerInput
 {
-    public InputConfig InputConfig;
-    public MovementDirection MovementDirection;
+    private InputConfig config;
+
+    public KeyboardPlayerInput(InputConfig config)
+    {
+        this.config = config;
+    }
 
     public MovementDirection GetMovementDirection()
     {
@@ -23,16 +27,16 @@ public class KeyboardPlayerInput : MonoBehaviour, IPlayerInput
 
     public bool IsLeftKeyHeld()
     {
-        return Input.GetKey(InputConfig.LeftKey);
+        return Input.GetKey(config.LeftKey);
     }
 
     public bool IsRightKeyHeld()
     {
-        return Input.GetKey(InputConfig.RightKey);
+        return Input.GetKey(config.RightKey);
     }
 
     public bool IsShootKeyDown()
     {
-        return Input.GetKeyDown(InputConfig.ShootKey);
+        return Input.GetKeyDown(config.ShootKey);
     }
 }

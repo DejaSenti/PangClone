@@ -1,25 +1,43 @@
 ﻿using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController
 {
-    public Player Player;
-    public Gun Gun;
-    public KeyboardPlayerInput PlayerInput;
+    public Player Player { get; private set; }
 
-    private void Awake()
+    private IPlayerInput playerInput;
+
+    public PlayerController(Player player, IPlayerInput playerInput)
     {
-        Gun.Initialize();
+        this.Player = player;
+        this.playerInput = playerInput;
+
+        this.Player.Gun.Initialize();
     }
 
-    private void Update()
+    public void SetPlayerPosition(Vector3 position)
     {
-        var inputMovementDirection = PlayerInput.GetMovementDirection();
+        Player.transform.position = position;
+    }
+
+    public void ActivatePlayer()
+    {
+        Player.gameObject.SetActive(true);
+    }
+
+    public void DeactivatePlayer()
+    {
+        Player.gameObject.SetActive(false);
+    }
+
+    public void Update()
+    {
+        var inputMovementDirection = playerInput.GetMovementDirection();
 
         Player.Move(inputMovementDirection);
 
-        if (PlayerInput.IsShootKeyDown())
+        if (playerInput.IsShootKeyDown())
         {
-            Gun.Shoot();
+            Player.Gun.Shoot();
         }
     }
 }

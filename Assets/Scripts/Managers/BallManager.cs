@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class BallManager : MonoBehaviour
 {
+    public UnityEvent AllBallsDestroyedEvent;
+
     [SerializeField]
-    private GameObject ball;
+    private GameObject ballPrefab;
     [SerializeField]
     private GameObject level;
     [SerializeField]
@@ -11,6 +14,14 @@ public class BallManager : MonoBehaviour
 
     private ObjectPool<Ball> pool;
     private BallSpawnPoint[] ballSpawnPoints;
+
+    private void Awake()
+    {
+        if (AllBallsDestroyedEvent == null)
+        {
+            AllBallsDestroyedEvent = new UnityEvent();
+        }
+    }
 
     public void Initialize(GameObject level)
     {
@@ -20,7 +31,7 @@ public class BallManager : MonoBehaviour
 
         if (pool == null)
         {
-            pool = new ObjectPool<Ball>(ball);
+            pool = new ObjectPool<Ball>(ballPrefab);
         }
 
         int poolSize = 0;
@@ -80,6 +91,22 @@ public class BallManager : MonoBehaviour
                 newBall.BallCollisionEvent.AddListener(OnBallCollision);
             }
         }
+
+        if (pool.ActiveCount == 0)
+        {
+            AllBallsDestroyedEvent.Invoke();
+        }
+    }
+
+    public void Terminate()
+    {
+        var poolObjects = pool.GetAllPooledObjects();
+        foreach (var ball in poolObjects)
+        {
+            ball.BallCollisionEvent.RemoveListener(OnBallCollision);
+        }
+
+        pool.Terminate();
     }
 
     [ContextMenu("Test Level")]

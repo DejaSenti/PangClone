@@ -5,13 +5,13 @@ public class Gun : MonoBehaviour
     public int BulletLimit;
 
     [SerializeField]
-    private GameObject projectile;
+    private GameObject projectilePrefab;
 
     private ObjectPool<Projectile> pool;
 
     private void Awake()
     {
-        if (projectile.GetComponentInChildren<Projectile>() == null)
+        if (projectilePrefab.GetComponentInChildren<Projectile>() == null)
         {
             Debug.LogError("Assigned projectile doesn't have valid projectile component.");
         }
@@ -21,7 +21,7 @@ public class Gun : MonoBehaviour
     {
         if (pool == null)
         {
-            pool = new ObjectPool<Projectile>(projectile);
+            pool = new ObjectPool<Projectile>(projectilePrefab);
         }
 
         pool.Initialize(BulletLimit);

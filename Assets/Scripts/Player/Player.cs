@@ -5,9 +5,10 @@ public class Player : MonoBehaviour
 {
     public PlayerID PlayerID;
 
-    public UnityEvent HitEvent;
+    public PlayerHitEvent HitEvent;
 
     public Rigidbody2D RB;
+    public Gun Gun;
 
     public float Acceleration;
     public float MaxSpeed;
@@ -18,7 +19,7 @@ public class Player : MonoBehaviour
     {
         if (HitEvent == null)
         {
-            HitEvent = new UnityEvent();
+            HitEvent = new PlayerHitEvent();
         }
     }
 
@@ -26,7 +27,7 @@ public class Player : MonoBehaviour
     {
         if (collision.collider.tag == ComponentTagNames.BALL)
         {
-            HitEvent.Invoke();
+            HitEvent.Invoke(PlayerID);
         }
     }
 

@@ -9,10 +9,10 @@ public class Ball : PoolableObject
 
     public float BaseSize;
 
-    public int Size;
+    public int Size { get; private set; }
     public float Radius { get => Mathf.Pow(2, Size) * BaseSize; }
 
-    public Color Color;
+    public Color Color { get; private set; }
 
     private void Awake()
     {

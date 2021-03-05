@@ -27,12 +27,14 @@ public class Gun : MonoBehaviour
         pool.Initialize(BulletLimit);
     }
 
-    public void Shoot()
+    public void Shoot(PlayerID playerID)
     {
         var projectile = pool.Acquire();
 
         if (projectile == null)
             return;
+
+        projectile.OwnerID = playerID;
 
         projectile.transform.localPosition = transform.position;
 

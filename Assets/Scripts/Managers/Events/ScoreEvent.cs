@@ -1,5 +1,5 @@
 ﻿using UnityEngine.Events;
 
-public class ScoreEvent : UnityEvent<int>
+public class ScoreEvent : UnityEvent<IScorable, PlayerID>
 {
 }

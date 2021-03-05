@@ -5,8 +5,10 @@ public class Timer : MonoBehaviour
 {
     public UnityEvent TimerElapsedEvent;
 
+    public int RoundTimeLeft { get => (int)(duration - elapsed) + 1; }
+
     private float duration;
-    private float timeElapsed;
+    private float elapsed;
 
     private void Awake()
     {
@@ -17,14 +19,14 @@ public class Timer : MonoBehaviour
     {
         this.duration = duration;
 
-        timeElapsed = 0;
+        elapsed = 0;
         enabled = true;
     }
 
     private void Update()
     {
-        timeElapsed += Time.deltaTime;
-        if (timeElapsed > duration)
+        elapsed += Time.deltaTime;
+        if (elapsed > duration)
         {
             ResetTimer();
             if (TimerElapsedEvent != null)
@@ -36,6 +38,6 @@ public class Timer : MonoBehaviour
     {
         enabled = false;
         duration = 0;
-        timeElapsed = 0;
+        elapsed = 0;
     }
 }

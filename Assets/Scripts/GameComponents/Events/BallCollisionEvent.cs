@@ -1,5 +1,5 @@
 ﻿using UnityEngine.Events;
 
-public class BallCollisionEvent : UnityEvent<Ball>
+public class BallCollisionEvent : UnityEvent<Ball, PlayerID>
 {
 }

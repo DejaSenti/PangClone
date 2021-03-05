@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Ball : PoolableObject
+public class Ball : PoolableObject, IScorable
 {
     public BallCollisionEvent BallCollisionEvent;
 
@@ -50,7 +50,8 @@ public class Ball : PoolableObject
     {
         if (collider.tag == ComponentTagNames.PROJECTILE)
         {
-            BallCollisionEvent.Invoke(this);
+            var projectile = collider.GetComponent<Projectile>();
+            BallCollisionEvent.Invoke(this, projectile.OwnerID);
         }
     }
 }

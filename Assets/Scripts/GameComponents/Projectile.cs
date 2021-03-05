@@ -3,6 +3,7 @@
 public abstract class Projectile : PoolableObject
 {
     public ProjectileDestroyedEvent DestroyedEvent;
+    public PlayerID OwnerID;
 
     private void Awake()
     {

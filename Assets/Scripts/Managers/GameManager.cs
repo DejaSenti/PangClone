@@ -3,7 +3,8 @@
 [RequireComponent(typeof(Timer))]
 public class GameManager : MonoBehaviour
 {
-    private int level;
+    public static int Level;
+
     private GameObject currentLevel;
 
     [SerializeField]
@@ -11,20 +12,30 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private BallManager ballManager;
     [SerializeField]
+    private ScoreManager scoreManager;
+    [SerializeField]
+    private View view;
+    [SerializeField]
     private Timer timer;
 
     public void Initialize(int numPlayers)
     {
         playerManager.Initialize(timer, numPlayers);
+        scoreManager.Initialize(numPlayers);
     }
 
     public void StartNewGame()
     {
-        level = 1;
+        Level = 1;
 
-        InitializeLevel(level);
+        InitializeLevel(Level);
 
         StartLevel();
+    }
+
+    private void Update()
+    {
+        view.UpdateTimer(timer.RoundTimeLeft);
     }
 
     private void InitializeLevel(int level)
@@ -73,9 +84,9 @@ public class GameManager : MonoBehaviour
     {
         RemoveListeners();
 
-        level++;
+        Level++;
         EndCurrentLevel();
-        InitializeLevel(level);
+        InitializeLevel(Level);
         StartLevel();
     }
 
@@ -103,7 +114,7 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Test Game")]
     public void TestGame()
     {
-        Initialize(1);
+        Initialize(2);
         StartNewGame();
     }
 }

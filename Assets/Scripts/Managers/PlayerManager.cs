@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,6 +10,8 @@ public class PlayerManager : MonoBehaviour
 
     [SerializeField]
     private GameObject playerPrefab;
+    [SerializeField]
+    private View view;
 
     private PlayerSpawnPoint[] playerSpawnPoints;
     private Dictionary<PlayerID, PlayerController> playerControllersByID;
@@ -36,27 +39,29 @@ public class PlayerManager : MonoBehaviour
 
         for (int i = 0; i < numPlayers; i++)
         {
-            var ID = (PlayerID)(i + 1);
+            var playerID = (PlayerID)(i + 1);
 
-            var inputConfig = Resources.Load(MainAssetPaths.INPUTS + ID) as InputConfig;
+            var inputConfig = Resources.Load(MainAssetPaths.INPUTS + playerID) as InputConfig;
 
             if (inputConfig == null)
             {
-                Debug.LogError("No valid input config file for Player" + ID);
+                Debug.LogError("No valid input config file for Player" + playerID);
                 continue;
             }
 
             var playerGO = Instantiate(playerPrefab);
             var player = playerGO.GetComponent<Player>();
 
-            player.PlayerID = ID;
+            player.ID = playerID;
 
             var playerInput = new KeyboardPlayerInput(inputConfig);
 
             var playerController = new PlayerController(player, playerInput);
 
-            playerControllersByID[ID] = playerController;
-            playerLivesByID[ID] = PlayerData.MAX_PLAYER_LIVES;
+            playerControllersByID[playerID] = playerController;
+            playerLivesByID[playerID] = PlayerData.MAX_PLAYER_LIVES;
+
+            view.UpdateLives(playerID, playerLivesByID[playerID]);
         }
 
         this.gameTimer = gameTimer;
@@ -97,17 +102,22 @@ public class PlayerManager : MonoBehaviour
         var keys = new List<PlayerID>(playerLivesByID.Keys);
         foreach(var key in keys)
         {
-            playerLivesByID[key]--;
+            DecrementPlayerLives(key);
         }
 
         EndLevel();
     }
 
-    private void OnPlayerHit(PlayerID ID)
+    private void OnPlayerHit(PlayerID playerID)
     {
-        playerLivesByID[ID]--;
-
+        DecrementPlayerLives(playerID);
         EndLevel();
+    }
+
+    private void DecrementPlayerLives(PlayerID playerID)
+    {
+        playerLivesByID[playerID]--;
+        view.UpdateLives(playerID, playerLivesByID[playerID]);
     }
 
     public void EndLevel()

@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
-    public PlayerID PlayerID;
+    public PlayerID ID;
 
     public PlayerHitEvent HitEvent;
 
@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     {
         if (collision.collider.tag == ComponentTagNames.BALL)
         {
-            HitEvent.Invoke(PlayerID);
+            HitEvent.Invoke(ID);
         }
     }
 

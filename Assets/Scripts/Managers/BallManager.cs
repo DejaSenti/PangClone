@@ -71,10 +71,12 @@ public class BallManager : MonoBehaviour
         }
     }
 
-    private void OnBallCollision(Ball ball)
+    private void OnBallCollision(Ball ball, PlayerID playerID)
     {
         pool.Release(ball);
         ball.BallCollisionEvent.RemoveListener(OnBallCollision);
+
+        ScoreEvent.Invoke(ball, playerID);
 
         if (ball.Size > 1)
         {

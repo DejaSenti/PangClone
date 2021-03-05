@@ -38,7 +38,7 @@ public class PlayerController
 
         if (playerInput.IsShootKeyDown())
         {
-            Player.Gun.Shoot();
+            Player.Gun.Shoot(Player.ID);
         }
     }
 }

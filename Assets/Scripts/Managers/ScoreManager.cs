@@ -18,9 +18,9 @@ public class ScoreManager : MonoBehaviour
             playerScoresByID[playerID] = 0;
 
             UpdateScore(playerID, playerScoresByID[playerID]);
-
-            BallManager.ScoreEvent.AddListener(OnScoreEvent);
         }
+
+        BallManager.ScoreEvent.AddListener(OnScoreEvent);
     }
 
     private void OnScoreEvent(IScorable scoreable, PlayerID playerID)

@@ -1569,6 +1569,9 @@ MonoBehaviour:
   PlayerDeathEvent:
     m_PersistentCalls:
       m_Calls: []
+  UIPlayerInput: {fileID: 5486542645162862803, guid: 4f7d266546adf4b498e92b4874ed13f4,
+    type: 3}
+  canvas: {fileID: 210582554}
   playerPrefab: {fileID: 9188483511493465922, guid: 2decc1b97c5c9704b910e484dd7b0c06,
     type: 3}
   view: {fileID: 861217070}

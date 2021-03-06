@@ -6,4 +6,5 @@ public class InputConfig : ScriptableObject
     public KeyCode LeftKey;
     public KeyCode RightKey;
     public KeyCode ShootKey;
+    public KeyCode PauseKey;
 }

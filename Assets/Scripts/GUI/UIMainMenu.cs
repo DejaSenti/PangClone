@@ -16,11 +16,18 @@ public class UIMainMenu : MonoBehaviour
 
     public void Initialize()
     {
-        NumPlayers = playerSelect.value + 1;
-
         play.onClick.AddListener(OnPlayClick);
         quit.onClick.AddListener(OnQuitClick);
+
+#if UNITY_STANDALONE_WIN
+        NumPlayers = playerSelect.value + 1;
+
         playerSelect.onValueChanged.AddListener(OnPlayerSelectClick);
+#endif
+
+#if UNITY_ANDROID
+        NumPlayers = 1;
+#endif
     }
 
     private void OnPlayClick()
@@ -33,8 +40,10 @@ public class UIMainMenu : MonoBehaviour
         Application.Quit();
     }
 
+#if UNITY_STANDALONE_WIN
     private void OnPlayerSelectClick(int numPlayers)
     {
         NumPlayers = numPlayers + 1;
     }
+#endif
 }

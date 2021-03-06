@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
@@ -15,12 +14,21 @@ public class Player : MonoBehaviour
 
     public float DecelerationMultiplier;
 
+    [SerializeField]
+    private SpriteRenderer sprite;
+
     private void Awake()
     {
         if (HitEvent == null)
         {
             HitEvent = new PlayerHitEvent();
         }
+    }
+
+    public void Initialize(PlayerID playerID, Color color)
+    {
+        ID = playerID;
+        sprite.color = color;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

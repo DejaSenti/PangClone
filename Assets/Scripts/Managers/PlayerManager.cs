@@ -6,6 +6,15 @@ public class PlayerManager : MonoBehaviour
 {
     public UnityEvent PlayerDeathEvent;
 
+    public IPlayerInput[] PlayerInputs;
+
+#if UNITY_ANDROID
+    [SerializeField]
+    private UIPlayerInput UIPlayerInput;
+    [SerializeField]
+    private Canvas canvas;
+#endif
+
     [SerializeField]
     private GameObject playerPrefab;
     [SerializeField]
@@ -25,6 +34,7 @@ public class PlayerManager : MonoBehaviour
 
     public void Initialize(int numPlayers)
     {
+        PlayerInputs = new IPlayerInput[numPlayers];
         playerControllersByID = new Dictionary<PlayerID, PlayerController>();
         playerLivesByID = new Dictionary<PlayerID, int>();
 
@@ -32,20 +42,23 @@ public class PlayerManager : MonoBehaviour
         {
             var playerID = (PlayerID)(i + 1);
 
-            var inputConfig = Resources.Load(MainAssetPaths.INPUTS + playerID) as InputConfig;
-
-            if (inputConfig == null)
-            {
-                Debug.LogError("No valid input config file for Player" + playerID);
+#if UNITY_STANDALONE_WIN
+            var playerInput = GetPlayerInput(playerID);
+            if (playerInput == null)
                 continue;
-            }
+#endif
+
+#if UNITY_ANDROID
+            var playerInput = GetPlayerInput();
+#endif
+
+            playerInput.SetEnabled(true);
+            PlayerInputs[i] = playerInput;
 
             var playerGO = Instantiate(playerPrefab);
             var player = playerGO.GetComponent<Player>();
 
-            player.ID = playerID;
-
-            var playerInput = new KeyboardPlayerInput(inputConfig);
+            player.Initialize(playerID, PlayerData.PLAYER_COLORS[i]);
 
             var playerController = new PlayerController(player, playerInput);
 
@@ -57,6 +70,31 @@ public class PlayerManager : MonoBehaviour
             view.UpdateLives(playerID, playerLivesByID[playerID]);
         }
     }
+
+#if UNITY_STANDALONE_WIN
+    private IPlayerInput GetPlayerInput(PlayerID playerID)
+    {
+        var inputConfig = Resources.Load(MainAssetPaths.INPUTS + playerID) as InputConfig;
+
+        if (inputConfig == null)
+        {
+            Debug.LogError("No valid input config file for Player" + playerID);
+            return null;
+        }
+
+        var result = new KeyboardPlayerInput(inputConfig);
+        return result;
+    }
+#endif
+
+#if UNITY_ANDROID
+    private IPlayerInput GetPlayerInput()
+    {
+        var result = Instantiate(UIPlayerInput, canvas.transform);
+        result.transform.SetAsFirstSibling();
+        return result;
+    }
+#endif
 
     public void InitializeLevel(GameObject level)
     {

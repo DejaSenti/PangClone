@@ -4,9 +4,21 @@ public class KeyboardPlayerInput : IPlayerInput
 {
     private InputConfig config;
 
+    private bool isEnabled;
+
     public KeyboardPlayerInput(InputConfig config)
     {
         this.config = config;
+    }
+
+    public void SetEnabled(bool state)
+    {
+        isEnabled = state;
+    }
+
+    public bool GetEnabled()
+    {
+        return isEnabled;
     }
 
     public MovementDirection GetMovementDirection()
@@ -27,16 +39,21 @@ public class KeyboardPlayerInput : IPlayerInput
 
     public bool IsLeftKeyHeld()
     {
-        return Input.GetKey(config.LeftKey);
+        return Input.GetKey(config.LeftKey) && isEnabled;
     }
 
     public bool IsRightKeyHeld()
     {
-        return Input.GetKey(config.RightKey);
+        return Input.GetKey(config.RightKey) && isEnabled;
     }
 
     public bool IsShootKeyDown()
     {
-        return Input.GetKeyDown(config.ShootKey);
+        return Input.GetKeyDown(config.ShootKey) && isEnabled;
+    }
+
+    public bool IsPauseKeyDown()
+    {
+        return Input.GetKeyDown(config.PauseKey) && isEnabled;
     }
 }

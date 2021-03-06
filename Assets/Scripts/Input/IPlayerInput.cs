@@ -1,7 +1,10 @@
 ﻿public interface IPlayerInput
 {
+    void SetEnabled(bool state);
+    bool GetEnabled();
+
     MovementDirection GetMovementDirection();
-    bool IsLeftKeyHeld();
-    bool IsRightKeyHeld();
+
     bool IsShootKeyDown();
+    bool IsPauseKeyDown();
 }

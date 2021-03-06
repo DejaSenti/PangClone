@@ -214,3 +214,4 @@ MonoBehaviour:
   Acceleration: 50
   MaxSpeed: 10
   DecelerationMultiplier: 0.9
+  sprite: {fileID: 9188483511493465982}

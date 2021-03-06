@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Timer))]
 public class OverlayController : MonoBehaviour
@@ -16,10 +15,9 @@ public class OverlayController : MonoBehaviour
     [SerializeField]
     private Timer timer;
 
-    private float savedTimeScale;
+    private IPlayerInput[] playerInputs;
 
-    private KeyCode pauseButton = KeyCode.Escape;
-    private bool isPauseDown { get => Input.GetKeyDown(pauseButton); }
+    private float savedTimeScale;
 
     private bool isDuringAnnouncement;
 
@@ -31,11 +29,20 @@ public class OverlayController : MonoBehaviour
         }
     }
 
+    public void Initialize(IPlayerInput[] playerInputs)
+    {
+        this.playerInputs = playerInputs;
+    }
+
     private void Update()
     {
-        if (isPauseDown)
+        foreach (IPlayerInput input in playerInputs)
         {
-            OnPauseButton();
+            if (input.GetEnabled() && input.IsPauseKeyDown())
+            {
+                OnPauseButton();
+                return;
+            }
         }
     }
 
@@ -108,12 +115,22 @@ public class OverlayController : MonoBehaviour
     {
         TogglePause();
         ShowPause();
+
+        foreach (IPlayerInput playerInput in playerInputs)
+        {
+            playerInput.SetEnabled(false);
+        }
     }
 
     private void UnpauseGame()
     {
         TogglePause();
         HidePause();
+
+        foreach (IPlayerInput playerInput in playerInputs)
+        {
+            playerInput.SetEnabled(true);
+        }
     }
 
     private void ShowPause()
@@ -143,6 +160,7 @@ public class OverlayController : MonoBehaviour
 
     private void OnExitClick()
     {
+        UnpauseGame();
         gameController.Terminate();
     }
 

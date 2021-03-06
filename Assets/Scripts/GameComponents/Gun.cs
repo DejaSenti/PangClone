@@ -13,6 +13,8 @@ public class Gun : MonoBehaviour
 
     private ObjectPool<Projectile> pool;
 
+    private PlayerID ownerID;
+
     private void Awake()
     {
         if (projectilePrefab.GetComponentInChildren<Projectile>() == null)
@@ -21,7 +23,7 @@ public class Gun : MonoBehaviour
         }
     }
 
-    public void Initialize()
+    public void Initialize(PlayerID ownerID)
     {
         if (pool == null)
         {
@@ -29,9 +31,11 @@ public class Gun : MonoBehaviour
         }
 
         pool.Initialize(BulletLimit);
+
+        this.ownerID = ownerID;
     }
 
-    public void Shoot(PlayerID playerID)
+    public void Shoot()
     {
         if (cooldownTimer.enabled)
             return;
@@ -41,7 +45,7 @@ public class Gun : MonoBehaviour
         if (projectile == null)
             return;
 
-        projectile.OwnerID = playerID;
+        projectile.OwnerID = ownerID;
 
         projectile.transform.localPosition = transform.position;
 

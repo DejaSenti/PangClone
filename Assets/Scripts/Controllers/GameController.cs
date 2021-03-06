@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour
         levelManager = new LevelManager();
         playerManager.Initialize(numPlayers);
         scoreManager.Initialize(numPlayers);
+        overlayController.Initialize(playerManager.PlayerInputs);
     }
 
     public void StartNewGame()
@@ -197,6 +198,12 @@ public class GameController : MonoBehaviour
         scoreManager.Terminate();
         overlayController.Terminate();
 
+#if UNITY_ANDROID
+        SceneManager.LoadScene(GameScenes.MAIN_MENU_ANDROID);
+#endif
+
+#if UNITY_STANDALONE_WIN
         SceneManager.LoadScene(GameScenes.MAIN_MENU);
+#endif
     }
 }

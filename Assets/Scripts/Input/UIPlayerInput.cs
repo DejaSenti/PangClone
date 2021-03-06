@@ -2,50 +2,89 @@
 
 public class UIPlayerInput : MonoBehaviour, IPlayerInput
 {
+    private bool isEnabled;
+
     private bool isLeftKeyHeld;
     private bool isRightKeyHeld;
     private bool isShootKeyDown;
+    private bool isPauseKeyDown;
+
+    public void SetEnabled(bool state)
+    {
+        isEnabled = state;
+    }
+
+    public bool GetEnabled()
+    {
+        return isEnabled;
+    }
 
     public void SetLeftKey(bool state)
     {
-        isLeftKeyHeld = state;
+        isLeftKeyHeld = state && isEnabled;
     }
 
     public void SetRightKey(bool state)
     {
-        isRightKeyHeld = state;
+        isRightKeyHeld = state && isEnabled;
     }
 
     public void SetShootKey()
     {
-        isShootKeyDown = true;
+        isShootKeyDown = true && isEnabled;
     }
 
-    public bool IsLeftKeyHeld()
+    public void SetPauseKey()
     {
-        return isLeftKeyHeld;
+        isPauseKeyDown = true && isEnabled;
     }
 
-    public bool IsRightKeyHeld()
+    private void ResetShootKey()
     {
-        return isRightKeyHeld;
+        isShootKeyDown = false;
     }
 
-    public bool IsShootKeyDown()
+    private void ResetPauseKey()
     {
-        if (isShootKeyDown)
-        {
-            isShootKeyDown = false;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        isPauseKeyDown = false;
     }
 
     public MovementDirection GetMovementDirection()
     {
-        throw new System.NotImplementedException();
+        MovementDirection result = MovementDirection.None;
+
+        if (isLeftKeyHeld && !isRightKeyHeld)
+        {
+            result = MovementDirection.Left;
+        }
+        else if (!isLeftKeyHeld && isRightKeyHeld)
+        {
+            result = MovementDirection.Right;
+        }
+
+        return result;
+    }
+
+    public bool IsShootKeyDown()
+    {
+        return isShootKeyDown;
+    }
+
+    public bool IsPauseKeyDown()
+    {
+        return isPauseKeyDown;
+    }
+
+    private void Update()
+    {
+        if (isShootKeyDown)
+        {
+            Invoke("ResetShootKey", 0);
+        }
+
+        if (isPauseKeyDown)
+        {
+            Invoke("ResetPauseKey", 0);
+        }
     }
 }

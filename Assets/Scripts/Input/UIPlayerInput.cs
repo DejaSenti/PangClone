@@ -36,7 +36,7 @@ public class UIPlayerInput : MonoBehaviour, IPlayerInput
 
     public void SetPauseKey()
     {
-        isPauseKeyDown = true && isEnabled;
+        isPauseKeyDown = true;
     }
 
     private void ResetShootKey()

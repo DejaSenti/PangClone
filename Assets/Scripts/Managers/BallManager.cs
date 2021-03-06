@@ -113,7 +113,7 @@ public class BallManager : MonoBehaviour
             ball.BallCollisionEvent.RemoveListener(OnBallCollision);
         }
 
-        pool.ReleaseAll();
+        pool.Terminate();
     }
 
     public void Terminate()

@@ -38,7 +38,7 @@ public class OverlayController : MonoBehaviour
     {
         foreach (IPlayerInput input in playerInputs)
         {
-            if (input.GetEnabled() && input.IsPauseKeyDown())
+            if (input.IsPauseKeyDown())
             {
                 OnPauseButton();
                 return;

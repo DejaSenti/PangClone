@@ -54,6 +54,6 @@ public class KeyboardPlayerInput : IPlayerInput
 
     public bool IsPauseKeyDown()
     {
-        return Input.GetKeyDown(config.PauseKey) && isEnabled;
+        return Input.GetKeyDown(config.PauseKey);
     }
 }

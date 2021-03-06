@@ -4,7 +4,7 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     [SerializeField]
-    private View view;
+    private HUD view;
 
     private Dictionary<PlayerID, int> playerScoresByID;
 
@@ -29,7 +29,7 @@ public class ScoreManager : MonoBehaviour
 
         if (scoreable is Ball)
         {
-            addedScore = GameData.BALL_SCORE * GameManager.Level;
+            addedScore = GameData.BALL_SCORE * GameController.Level;
         }
 
         UpdateScore(playerID, addedScore);
@@ -44,5 +44,6 @@ public class ScoreManager : MonoBehaviour
     public void Terminate()
     {
         BallManager.ScoreEvent.RemoveListener(OnScoreEvent);
+        Destroy(gameObject);
     }
 }

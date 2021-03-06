@@ -5,33 +5,25 @@ using UnityEngine.Events;
 public class PlayerManager : MonoBehaviour
 {
     public UnityEvent PlayerDeathEvent;
-    public UnityEvent LivesOverEvent;
 
     [SerializeField]
     private GameObject playerPrefab;
     [SerializeField]
-    private View view;
+    private HUD view;
 
     private PlayerSpawnPoint[] playerSpawnPoints;
     private Dictionary<PlayerID, PlayerController> playerControllersByID;
     private Dictionary<PlayerID, int> playerLivesByID;
 
-    private Timer gameTimer;
-
     private void Awake()
     {
-        if(PlayerDeathEvent == null)
+        if (PlayerDeathEvent == null)
         {
             PlayerDeathEvent = new UnityEvent();
         }
-
-        if(LivesOverEvent == null)
-        {
-            LivesOverEvent = new UnityEvent();
-        }
     }
 
-    public void Initialize(Timer gameTimer, int numPlayers)
+    public void Initialize(int numPlayers)
     {
         playerControllersByID = new Dictionary<PlayerID, PlayerController>();
         playerLivesByID = new Dictionary<PlayerID, int>();
@@ -57,13 +49,13 @@ public class PlayerManager : MonoBehaviour
 
             var playerController = new PlayerController(player, playerInput);
 
+            playerController.DeactivatePlayer();
+
             playerControllersByID[playerID] = playerController;
             playerLivesByID[playerID] = PlayerData.MAX_PLAYER_LIVES;
 
             view.UpdateLives(playerID, playerLivesByID[playerID]);
         }
-
-        this.gameTimer = gameTimer;
     }
 
     public void InitializeLevel(GameObject level)
@@ -75,7 +67,7 @@ public class PlayerManager : MonoBehaviour
     {
         foreach (PlayerSpawnPoint spawnPoint in playerSpawnPoints)
         {
-            if (!playerControllersByID.ContainsKey(spawnPoint.PlayerID) || playerLivesByID[spawnPoint.PlayerID] <= 0)
+            if (!playerControllersByID.ContainsKey(spawnPoint.PlayerID) || playerLivesByID[spawnPoint.PlayerID] == 0)
                 continue;
 
             var controller = playerControllersByID[spawnPoint.PlayerID];
@@ -84,8 +76,6 @@ public class PlayerManager : MonoBehaviour
 
             controller.Player.HitEvent.AddListener(OnPlayerHit);
         }
-
-        gameTimer.TimerElapsedEvent.AddListener(OnTimerElapsed);
     }
 
     private void Update()
@@ -94,19 +84,6 @@ public class PlayerManager : MonoBehaviour
         {
             controller.Update();
         }
-    }
-
-    private void OnTimerElapsed()
-    {
-        gameTimer.TimerElapsedEvent.RemoveListener(OnTimerElapsed);
-
-        var keys = new List<PlayerID>(playerLivesByID.Keys);
-        foreach(var key in keys)
-        {
-            DecrementPlayerLives(key);
-        }
-
-        PlayerDeathEvent.Invoke();
     }
 
     private void OnPlayerHit(PlayerID playerID)
@@ -118,18 +95,46 @@ public class PlayerManager : MonoBehaviour
 
     private void DecrementPlayerLives(PlayerID playerID)
     {
-        playerLivesByID[playerID]--;
+        if (playerLivesByID[playerID] > 0)
+            playerLivesByID[playerID]--;
+
         view.UpdateLives(playerID, playerLivesByID[playerID]);
     }
 
-    public void EndLevel()
+    public void DecrementLivesFromAll()
     {
-        gameTimer.TimerElapsedEvent.RemoveListener(OnTimerElapsed);
+        var keys = new List<PlayerID>(playerLivesByID.Keys);
+        foreach (var key in keys)
+        {
+            DecrementPlayerLives(key);
+        }
+    }
+
+    public bool EndLevel()
+    {
+        bool isGameOver = true;
 
         foreach (var key in playerControllersByID.Keys)
         {
             playerControllersByID[key].Player.HitEvent.RemoveListener(OnPlayerHit);
             playerControllersByID[key].DeactivatePlayer();
+
+            if (playerLivesByID[key] > 0)
+                isGameOver = false;
         }
+
+        return !isGameOver;
+    }
+
+    public void Terminate()
+    {
+        foreach (var value in playerControllersByID.Values)
+        {
+            value.Terminate();
+        }
+
+        PlayerDeathEvent.RemoveAllListeners();
+
+        Destroy(gameObject);
     }
 }

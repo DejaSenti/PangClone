@@ -115,4 +115,12 @@ public class BallManager : MonoBehaviour
 
         pool.ReleaseAll();
     }
+
+    public void Terminate()
+    {
+        pool.Terminate();
+        AllBallsDestroyedEvent.RemoveAllListeners();
+        ScoreEvent.RemoveAllListeners();
+        Destroy(gameObject);
+    }
 }

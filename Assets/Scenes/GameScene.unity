@@ -170,7 +170,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 162134117}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 179ad43e08b9eac429344c8fe836c9bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 90a35f7dd8871964b944ee0cb64a4733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Resume: {fileID: 1723305278}
@@ -776,7 +776,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 861217068}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 400a14d5afe167a4c92ce3bce2ffe4be, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b4d4ccd46415754392ebc865de3b4e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lives:
@@ -823,6 +823,50 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -85}
   m_SizeDelta: {x: 470, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1077749284
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1077749286}
+  - component: {fileID: 1077749285}
+  m_Layer: 0
+  m_Name: EntryPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1077749285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077749284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 193198f30dca4954bb75f07c74ce5313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameController: {fileID: 1538196253}
+--- !u!4 &1077749286
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077749284}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1100637468
 GameObject:
   m_ObjectHideFlags: 0
@@ -1048,7 +1092,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1213213316}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1af06bd57a89ea4a9841c45d5e83006, type: 3}
+  m_Script: {fileID: 11500000, guid: d1d0ad58a3d161d4b8e145a49ca74748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Announcement: {fileID: 1595877664}
@@ -1098,7 +1142,7 @@ GameObject:
   - component: {fileID: 1538196254}
   - component: {fileID: 1538196253}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GameController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1113,9 +1157,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1538196252}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0212995c585f54a99e2cb15d3ee62e, type: 3}
+  m_Script: {fileID: 11500000, guid: 14029f9f0065d8e49a8ab05ebf3a6361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsGameRunning: 0
   playerManager: {fileID: 1724880712}
   ballManager: {fileID: 2059256456}
   scoreManager: {fileID: 1100637469}
@@ -1129,7 +1174,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1538196252}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf324624339110848999df1da02a7d92, type: 3}
   m_Name: 
@@ -1311,12 +1356,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1633150571}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05518c6a459869444b76bfdc46ad8ad6, type: 3}
+  m_Script: {fileID: 11500000, guid: 0848132231b182b4b82a4b42684ed986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   AnnouncementOverEvent:
     m_PersistentCalls:
       m_Calls: []
+  gameController: {fileID: 1538196253}
   pauseOverlay: {fileID: 162134119}
   announcementOverlay: {fileID: 1213213318}
   timer: {fileID: 1633150574}
@@ -1521,9 +1567,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerDeathEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  LivesOverEvent:
     m_PersistentCalls:
       m_Calls: []
   playerPrefab: {fileID: 9188483511493465922, guid: 2decc1b97c5c9704b910e484dd7b0c06,

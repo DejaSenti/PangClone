@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +7,8 @@ public class OverlayController : MonoBehaviour
 {
     public UnityEvent AnnouncementOverEvent;
 
+    [SerializeField]
+    private GameController gameController;
     [SerializeField]
     private PauseOverlay pauseOverlay;
     [SerializeField]
@@ -19,6 +20,8 @@ public class OverlayController : MonoBehaviour
 
     private KeyCode pauseButton = KeyCode.Escape;
     private bool isPauseDown { get => Input.GetKeyDown(pauseButton); }
+
+    private bool isDuringAnnouncement;
 
     private void Awake()
     {
@@ -38,7 +41,7 @@ public class OverlayController : MonoBehaviour
 
     public void AnnounceGameStart()
     {
-        var text = string.Format(GameAnnouncements.LEVEL_START, GameManager.Level);
+        var text = string.Format(GameAnnouncements.LEVEL_START, GameController.Level);
         Announce(text);
     }
 
@@ -64,6 +67,8 @@ public class OverlayController : MonoBehaviour
 
     private void Announce(string text)
     {
+        isDuringAnnouncement = true;
+
         announcementOverlay.gameObject.SetActive(true);
         announcementOverlay.Announcement.text = text;
 
@@ -73,6 +78,8 @@ public class OverlayController : MonoBehaviour
 
     private void OnAnnouncementOver()
     {
+        isDuringAnnouncement = false;
+
         announcementOverlay.Announcement.text = string.Empty;
         announcementOverlay.gameObject.SetActive(false);
 
@@ -83,14 +90,17 @@ public class OverlayController : MonoBehaviour
 
     private void OnPauseButton()
     {
-        if (GameManager.IsGameRunning)
+        if (!isDuringAnnouncement)
         {
-            savedTimeScale = Time.timeScale;
-            PauseGame();
-        }
-        else
-        {
-            UnpauseGame();
+            if (gameController.IsGameRunning)
+            {
+                savedTimeScale = Time.timeScale;
+                PauseGame();
+            }
+            else
+            {
+                UnpauseGame();
+            }
         }
     }
 
@@ -122,17 +132,25 @@ public class OverlayController : MonoBehaviour
 
     private void TogglePause()
     {
-        GameManager.IsGameRunning = !GameManager.IsGameRunning;
+        gameController.IsGameRunning = !gameController.IsGameRunning;
         Time.timeScale = Time.timeScale == 0 ? savedTimeScale : 0;
-    }
-
-    private void OnExitClick()
-    {
-        SceneManager.LoadScene(GameScenes.MAIN_MENU);
     }
 
     private void OnResumeClick()
     {
         UnpauseGame();
+    }
+
+    private void OnExitClick()
+    {
+        gameController.Terminate();
+    }
+
+    public void Terminate()
+    {
+        AnnouncementOverEvent.RemoveAllListeners();
+        Destroy(pauseOverlay.gameObject);
+        Destroy(announcementOverlay.gameObject);
+        Destroy(gameObject);
     }
 }

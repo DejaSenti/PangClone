@@ -44,4 +44,10 @@ public class PlayerController
             Player.Gun.Shoot(Player.ID);
         }
     }
+
+    public void Terminate()
+    {
+        Player.Terminate();
+        Player.HitEvent.RemoveAllListeners();
+    }
 }

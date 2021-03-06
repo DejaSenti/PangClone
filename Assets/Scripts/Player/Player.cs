@@ -66,4 +66,9 @@ public class Player : MonoBehaviour
         var newVelocityX = RB.velocity.x * DecelerationMultiplier;
         RB.velocity = new Vector2(newVelocityX, RB.velocity.y);
     }
+
+    public void Terminate()
+    {
+        Destroy(gameObject);
+    }
 }

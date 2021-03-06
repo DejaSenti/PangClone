@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-public class View : MonoBehaviour
+public class HUD : MonoBehaviour
 {
     private static string PLAYER_LIVES_DISPLAY = "{0} Lives: {1}";
     private static string PLAYER_SCORE_DISPLAY = "{0} Score: {1}";

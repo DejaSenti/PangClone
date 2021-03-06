@@ -2,10 +2,10 @@
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Timer))]
-public class GameManager : MonoBehaviour
+public class GameController : MonoBehaviour
 {
     public static int Level;
-    public static bool IsGameRunning;
+    public bool IsGameRunning;
 
     private GameObject currentLevel;
 
@@ -15,40 +15,44 @@ public class GameManager : MonoBehaviour
     private BallManager ballManager;
     [SerializeField]
     private ScoreManager scoreManager;
+
     [SerializeField]
     private OverlayController overlayController;
+
     [SerializeField]
-    private View view;
+    private HUD view;
+
     [SerializeField]
     private Timer timer;
 
     public void Initialize(int numPlayers)
     {
-        playerManager.Initialize(timer, numPlayers);
+        playerManager.Initialize(numPlayers);
         scoreManager.Initialize(numPlayers);
     }
 
     public void StartNewGame()
     {
-        IsGameRunning = false;
+        IsGameRunning = true;
 
         Level = 1;
+        InitializeLevel();
 
-        InitializeLevel(Level);
+        AddListeners();
 
         AnnounceAndWaitForStartLevel();
     }
 
-    private void InitializeLevel(int level)
+    private void InitializeLevel()
     {
-        string levelPath = MainAssetPaths.LEVELS + level;
+        string levelPath = MainAssetPaths.LEVELS + Level;
 
         var levelGO = Resources.Load(levelPath);
 
         if (levelGO == null)
         {
-            overlayController.AnnounceGameOver();
-            overlayController.AnnouncementOverEvent.AddListener(OnGameOverAnnouncementOver);
+            IsGameRunning = false;
+            AnnounceAndWaitForGameOver();
             return;
         }
 
@@ -65,6 +69,12 @@ public class GameManager : MonoBehaviour
         overlayController.AnnouncementOverEvent.AddListener(OnLevelStartAnnouncementOver);
     }
 
+    private void AnnounceAndWaitForGameOver()
+    {
+        overlayController.AnnounceGameOver();
+        overlayController.AnnouncementOverEvent.AddListener(OnGameOverAnnouncementOver);
+    }
+
     private void OnLevelStartAnnouncementOver()
     {
         overlayController.AnnouncementOverEvent.RemoveListener(OnLevelStartAnnouncementOver);
@@ -78,14 +88,12 @@ public class GameManager : MonoBehaviour
         playerManager.StartLevel();
 
         timer.StartTimer(GameData.MAX_GAME_TIME);
-
-        AddListeners();
-
-        IsGameRunning = true;
     }
 
     private void OnTimerElapsed()
     {
+        playerManager.DecrementLivesFromAll();
+
         EndCurrentLevel();
 
         overlayController.AnnounceTimeUp();
@@ -100,51 +108,56 @@ public class GameManager : MonoBehaviour
         overlayController.AnnouncementOverEvent.AddListener(OnRoundOverAnnouncementOver);
     }
 
-    private void OnLivesOver()
-    {
-        EndCurrentLevel();
-
-        overlayController.AnnounceGameOver();
-        overlayController.AnnouncementOverEvent.AddListener(OnGameOverAnnouncementOver);
-    }
-
     private void OnAllBallsDestroyed()
     {
-        Level++;
         EndCurrentLevel();
+
+        Level++;
 
         overlayController.AnnounceLevelClear();
         overlayController.AnnouncementOverEvent.AddListener(OnRoundOverAnnouncementOver);
 
-        InitializeLevel(Level);
+        if (Level > GameEntryPoint.LevelCount)
+        {
+            IsGameRunning = false;
+            return;
+        }
+
+        InitializeLevel();
+    }
+
+    private void EndCurrentLevel()
+    {
+        timer.ResetTimer();
+
+        ballManager.EndLevel();
+
+        IsGameRunning = playerManager.EndLevel();
     }
 
     private void OnRoundOverAnnouncementOver()
     {
         overlayController.AnnouncementOverEvent.RemoveListener(OnRoundOverAnnouncementOver);
-        AnnounceAndWaitForStartLevel();
+
+        if (IsGameRunning)
+        {
+            AnnounceAndWaitForStartLevel();
+        }
+        else
+        {
+            AnnounceAndWaitForGameOver();
+        }
     }
 
     private void OnGameOverAnnouncementOver()
     {
         overlayController.AnnouncementOverEvent.RemoveListener(OnGameOverAnnouncementOver);
-        SceneManager.LoadScene(GameScenes.MAIN_MENU);
-    }
-
-    private void EndCurrentLevel()
-    {
-        IsGameRunning = false;
-
-        RemoveListeners();
-
-        playerManager.EndLevel();
-        ballManager.EndLevel();
+        Terminate();
     }
 
     private void AddListeners()
     {
         timer.TimerElapsedEvent.AddListener(OnTimerElapsed);
-        playerManager.LivesOverEvent.AddListener(OnLivesOver);
         playerManager.PlayerDeathEvent.AddListener(OnPlayerDeath);
         ballManager.AllBallsDestroyedEvent.AddListener(OnAllBallsDestroyed);
     }
@@ -152,14 +165,25 @@ public class GameManager : MonoBehaviour
     private void RemoveListeners()
     {
         timer.TimerElapsedEvent.RemoveListener(OnTimerElapsed);
-        playerManager.LivesOverEvent.RemoveListener(OnLivesOver);
         playerManager.PlayerDeathEvent.RemoveListener(OnPlayerDeath);
         ballManager.AllBallsDestroyedEvent.RemoveListener(OnAllBallsDestroyed);
     }
 
     private void Update()
     {
-        view.UpdateTimer(timer.RoundTimeLeft);
+        if (timer.isActiveAndEnabled)
+            view.UpdateTimer(timer.RoundTimeLeft);
+    }
+
+    public void Terminate()
+    {
+        RemoveListeners();
+        playerManager.Terminate();
+        ballManager.Terminate();
+        scoreManager.Terminate();
+        overlayController.Terminate();
+
+        SceneManager.LoadScene(GameScenes.MAIN_MENU);
     }
 
     [ContextMenu("Test Game")]

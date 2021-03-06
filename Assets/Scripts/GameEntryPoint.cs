@@ -14,7 +14,7 @@ public class GameEntryPoint : MonoBehaviour
 
     private void Start()
     {
-        gameController.Initialize(2);
+        gameController.Initialize(UIMainMenu.NumPlayers);
         gameController.StartNewGame();
     }
 }

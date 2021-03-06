@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(Timer))]
 public class Gun : MonoBehaviour
 {
     public int BulletLimit;
+    public float CooldownTime;
 
     [SerializeField]
     private GameObject projectilePrefab;
+    [SerializeField]
+    private Timer cooldownTimer;
 
     private ObjectPool<Projectile> pool;
 
@@ -29,6 +33,9 @@ public class Gun : MonoBehaviour
 
     public void Shoot(PlayerID playerID)
     {
+        if (cooldownTimer.enabled)
+            return;
+
         var projectile = pool.Acquire();
 
         if (projectile == null)
@@ -39,6 +46,8 @@ public class Gun : MonoBehaviour
         projectile.transform.localPosition = transform.position;
 
         projectile.DestroyedEvent.AddListener(OnProjectileDestroyed);
+
+        cooldownTimer.StartTimer(CooldownTime);
     }
 
     private void OnProjectileDestroyed(Projectile projectile)

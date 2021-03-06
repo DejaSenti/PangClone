@@ -5,9 +5,10 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public static int Level;
+
     public bool IsGameRunning;
 
-    private GameObject currentLevel;
+    private LevelManager levelManager;
 
     [SerializeField]
     private PlayerManager playerManager;
@@ -27,6 +28,7 @@ public class GameController : MonoBehaviour
 
     public void Initialize(int numPlayers)
     {
+        levelManager = new LevelManager();
         playerManager.Initialize(numPlayers);
         scoreManager.Initialize(numPlayers);
     }
@@ -36,43 +38,39 @@ public class GameController : MonoBehaviour
         IsGameRunning = true;
 
         Level = 1;
-        InitializeLevel();
+        LoadNewLevel();
 
         AddListeners();
 
         AnnounceAndWaitForStartLevel();
     }
 
-    private void InitializeLevel()
+    private void LoadNewLevel()
     {
-        string levelPath = MainAssetPaths.LEVELS + Level;
+        bool isLevelLoaded = levelManager.LoadLevelObject(Level);
 
-        var levelGO = Resources.Load(levelPath);
-
-        if (levelGO == null)
+        if (!isLevelLoaded)
         {
             IsGameRunning = false;
             AnnounceAndWaitForGameOver();
             return;
         }
 
-        currentLevel = (GameObject)Instantiate(levelGO);
-        currentLevel.transform.position = Vector3.zero;
+        levelManager.LoadCurrentLevel();
 
-        ballManager.InitializeLevel(currentLevel);
-        playerManager.InitializeLevel(currentLevel);
+        InitializeLevel();
+    }
+
+    private void InitializeLevel()
+    {
+        ballManager.InitializeLevel(levelManager.CurrentLevel);
+        playerManager.InitializeLevel(levelManager.CurrentLevel);
     }
 
     private void AnnounceAndWaitForStartLevel()
     {
         overlayController.AnnounceGameStart();
         overlayController.AnnouncementOverEvent.AddListener(OnLevelStartAnnouncementOver);
-    }
-
-    private void AnnounceAndWaitForGameOver()
-    {
-        overlayController.AnnounceGameOver();
-        overlayController.AnnouncementOverEvent.AddListener(OnGameOverAnnouncementOver);
     }
 
     private void OnLevelStartAnnouncementOver()
@@ -94,7 +92,7 @@ public class GameController : MonoBehaviour
     {
         playerManager.DecrementLivesFromAll();
 
-        EndCurrentLevel();
+        RestartCurrentLevel();
 
         overlayController.AnnounceTimeUp();
         overlayController.AnnouncementOverEvent.AddListener(OnRoundOverAnnouncementOver);
@@ -102,10 +100,18 @@ public class GameController : MonoBehaviour
 
     private void OnPlayerDeath()
     {
-        EndCurrentLevel();
+        RestartCurrentLevel();
 
         overlayController.AnnouncePlayerDeath();
         overlayController.AnnouncementOverEvent.AddListener(OnRoundOverAnnouncementOver);
+    }
+
+    private void RestartCurrentLevel()
+    {
+        EndCurrentLevel();
+
+        levelManager.LoadCurrentLevel();
+        InitializeLevel();
     }
 
     private void OnAllBallsDestroyed()
@@ -123,7 +129,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        InitializeLevel();
+        LoadNewLevel();
     }
 
     private void EndCurrentLevel()
@@ -133,6 +139,8 @@ public class GameController : MonoBehaviour
         ballManager.EndLevel();
 
         IsGameRunning = playerManager.EndLevel();
+
+        levelManager.UnloadCurrentLevel();
     }
 
     private void OnRoundOverAnnouncementOver()
@@ -147,6 +155,12 @@ public class GameController : MonoBehaviour
         {
             AnnounceAndWaitForGameOver();
         }
+    }
+
+    private void AnnounceAndWaitForGameOver()
+    {
+        overlayController.AnnounceGameOver();
+        overlayController.AnnouncementOverEvent.AddListener(OnGameOverAnnouncementOver);
     }
 
     private void OnGameOverAnnouncementOver()
@@ -184,12 +198,5 @@ public class GameController : MonoBehaviour
         overlayController.Terminate();
 
         SceneManager.LoadScene(GameScenes.MAIN_MENU);
-    }
-
-    [ContextMenu("Test Game")]
-    public void TestGame()
-    {
-        Initialize(2);
-        StartNewGame();
     }
 }

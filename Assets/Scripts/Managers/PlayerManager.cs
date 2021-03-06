@@ -8,12 +8,10 @@ public class PlayerManager : MonoBehaviour
 
     public IPlayerInput[] PlayerInputs;
 
-#if UNITY_ANDROID
     [SerializeField]
     private UIPlayerInput UIPlayerInput;
     [SerializeField]
     private Canvas canvas;
-#endif
 
     [SerializeField]
     private GameObject playerPrefab;

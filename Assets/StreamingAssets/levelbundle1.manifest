@@ -1,0 +1,43 @@
+ManifestFileVersion: 0
+CRC: 3656767886
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 32f5eea6ab12df04a40bd237f09db272
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 1181fae1eec074267f94d10bf8369f5d
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 61
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: d36c5b482fa0ecb48a3b02490e6c5d58, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1490e9f97c31a184384865bb69965d3a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2845f71cd9199de4282e0bca6c20790d, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Resources/Prefabs/Levels/Level4.prefab
+- Assets/Resources/Prefabs/Levels/Level3.prefab
+- Assets/Resources/Prefabs/Levels/Level5.prefab
+- Assets/Resources/Prefabs/Levels/Level1.prefab
+- Assets/Resources/Prefabs/Levels/Level2.prefab
+Dependencies: []

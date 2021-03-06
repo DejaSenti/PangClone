@@ -124,7 +124,7 @@ public class GameController : MonoBehaviour
         overlayController.AnnounceLevelClear();
         overlayController.AnnouncementOverEvent.AddListener(OnRoundOverAnnouncementOver);
 
-        if (Level > GameEntryPoint.LevelCount)
+        if (Level > levelManager.LevelCount)
         {
             IsGameRunning = false;
             return;
@@ -197,6 +197,7 @@ public class GameController : MonoBehaviour
         ballManager.Terminate();
         scoreManager.Terminate();
         overlayController.Terminate();
+        levelManager.Terminate();
 
 #if UNITY_ANDROID
         SceneManager.LoadScene(GameScenes.MAIN_MENU_ANDROID);

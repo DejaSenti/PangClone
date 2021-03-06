@@ -15,3 +15,4 @@ MonoBehaviour:
   LeftKey: 97
   RightKey: 100
   ShootKey: 119
+  PauseKey: 27

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
+    public static ScoreEvent ScoreEvent;
+
     [SerializeField]
     private HUD view;
 
@@ -10,6 +12,11 @@ public class ScoreManager : MonoBehaviour
 
     public void Initialize(int numPlayers)
     {
+        if (ScoreEvent == null)
+        {
+            ScoreEvent = new ScoreEvent();
+        }
+
         playerScoresByID = new Dictionary<PlayerID, int>();
 
         for (int i = 0; i < numPlayers; i++)
@@ -20,7 +27,7 @@ public class ScoreManager : MonoBehaviour
             UpdateScore(playerID, playerScoresByID[playerID]);
         }
 
-        BallManager.ScoreEvent.AddListener(OnScoreEvent);
+        ScoreEvent.AddListener(OnScoreEvent);
     }
 
     private void OnScoreEvent(IScorable scoreable, PlayerID playerID)
@@ -43,7 +50,7 @@ public class ScoreManager : MonoBehaviour
 
     public void Terminate()
     {
-        BallManager.ScoreEvent.RemoveListener(OnScoreEvent);
+        ScoreEvent.RemoveAllListeners();
         Destroy(gameObject);
     }
 }

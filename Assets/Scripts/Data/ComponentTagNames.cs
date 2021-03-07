@@ -1,5 +1,5 @@
 ﻿public static class ComponentTagNames
 {
-    public static string BALL = "Ball";
-    public static string PROJECTILE = "Projectile";
+    public const string BALL = "Ball";
+    public const string PROJECTILE = "Projectile";
 }

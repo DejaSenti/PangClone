@@ -36,20 +36,6 @@ public class ObjectPool<T> where T : PoolableObject
         }
     }
 
-    public void Terminate()
-    {
-        var allObjects = GetAllPooledObjects();
-
-        objectPool.Clear();
-        activeObjects.Clear();
-
-        foreach (T poolableObject in allObjects)
-        {
-            poolableObject.Deactivate();
-            Object.Destroy(poolableObject.gameObject);
-        }
-    }
-
     public List<T> GetAllPooledObjects()
     {
         var result = objectPool.Concat(activeObjects).ToList();
@@ -89,6 +75,20 @@ public class ObjectPool<T> where T : PoolableObject
         foreach(var pooledObject in allObjects)
         {
             Release(pooledObject);
+        }
+    }
+
+    public void Terminate()
+    {
+        var allObjects = GetAllPooledObjects();
+
+        objectPool.Clear();
+        activeObjects.Clear();
+
+        foreach (T poolableObject in allObjects)
+        {
+            poolableObject.Deactivate();
+            Object.Destroy(poolableObject.gameObject);
         }
     }
 }

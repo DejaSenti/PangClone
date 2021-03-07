@@ -3,14 +3,10 @@ using UnityEngine.Events;
 
 public class BallManager : MonoBehaviour
 {
-    public static ScoreEvent ScoreEvent;
-
     public UnityEvent AllBallsDestroyedEvent;
 
     [SerializeField]
     private GameObject ballPrefab;
-    [SerializeField]
-    private float ballSpeedOnSplit;
 
     private ObjectPool<Ball> pool;
     private BallSpawnPoint[] ballSpawnPoints;
@@ -20,11 +16,6 @@ public class BallManager : MonoBehaviour
         if (AllBallsDestroyedEvent == null)
         {
             AllBallsDestroyedEvent = new UnityEvent();
-        }
-
-        if (ScoreEvent == null)
-        {
-            ScoreEvent = new ScoreEvent();
         }
     }
 
@@ -73,7 +64,7 @@ public class BallManager : MonoBehaviour
         pool.Release(ball);
         ball.BallCollisionEvent.RemoveListener(OnBallCollision);
 
-        ScoreEvent.Invoke(ball, playerID);
+        ScoreManager.ScoreEvent.Invoke(ball, playerID);
 
         if (ball.Size > 1)
         {
@@ -91,7 +82,7 @@ public class BallManager : MonoBehaviour
                     return;
                 }
 
-                var newVelocity = BallData.DIRECTION_VECTORS[i].normalized * ballSpeedOnSplit;
+                var newVelocity = BallData.DIRECTION_VECTORS[i].normalized * BallData.BALL_SPEED_ON_SPAWN;
 
                 newBall.Initialize(newSize, newColor, newPosition, newVelocity);
 
@@ -118,9 +109,8 @@ public class BallManager : MonoBehaviour
 
     public void Terminate()
     {
-        pool.Terminate();
+        EndLevel();
         AllBallsDestroyedEvent.RemoveAllListeners();
-        ScoreEvent.RemoveAllListeners();
         Destroy(gameObject);
     }
 }

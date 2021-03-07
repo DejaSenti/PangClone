@@ -27,7 +27,7 @@ public class Ball : PoolableObject, IScorable
         var size = spawnPoint.InitialBallSize;
         var color = spawnPoint.InitialBallColour;
         var position = spawnPoint.transform.position;
-        var velocity = spawnPoint.InitialDirection.normalized * spawnPoint.InitialBallSpeed;
+        var velocity = spawnPoint.InitialDirection.normalized * BallData.BALL_SPEED_ON_SPAWN;
 
         Initialize(size, color, position, velocity);
     }

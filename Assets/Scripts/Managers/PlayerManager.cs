@@ -6,7 +6,7 @@ public class PlayerManager : MonoBehaviour
 {
     public UnityEvent PlayerDeathEvent;
 
-    public IPlayerInput[] PlayerInputs;
+    public IPlayerInput[] PlayerInputs { get; private set; }
 
     [SerializeField]
     private UIPlayerInput UIPlayerInput;

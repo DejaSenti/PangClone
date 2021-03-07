@@ -5,7 +5,7 @@ public class LevelManager
     public GameObject CurrentLevel { get; private set; }
     public Object CurrentLevelGO { get; private set; }
 
-    public int LevelCount;
+    public int LevelCount { get; private set; }
 
     private AssetBundle levelBundle;
 

@@ -2,18 +2,21 @@
 
 public class Player : MonoBehaviour
 {
-    public PlayerID ID;
+    public PlayerID ID { get; private set; }
 
     public PlayerHitEvent HitEvent;
 
-    public Rigidbody2D RB;
-    public Gun Gun;
+    [SerializeField]
+    private float acceleration;
+    [SerializeField]
+    private float maxSpeed;
+    [SerializeField]
+    private float decelerationMultiplier;
 
-    public float Acceleration;
-    public float MaxSpeed;
-
-    public float DecelerationMultiplier;
-
+    [SerializeField]
+    private Gun gun;
+    [SerializeField]
+    private Rigidbody2D RB;
     [SerializeField]
     private SpriteRenderer sprite;
 
@@ -29,6 +32,8 @@ public class Player : MonoBehaviour
     {
         ID = playerID;
         sprite.color = color;
+
+        gun.Initialize(playerID);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -46,17 +51,17 @@ public class Player : MonoBehaviour
         switch (direction)
         {
             case MovementDirection.Left:
-                if (RB.velocity.x < -MaxSpeed)
+                if (RB.velocity.x < -maxSpeed)
                     return;
 
-                addedSpeedX = -Acceleration * Time.deltaTime;
+                addedSpeedX = -acceleration * Time.deltaTime;
                 break;
 
             case MovementDirection.Right:
-                if (RB.velocity.x > MaxSpeed)
+                if (RB.velocity.x > maxSpeed)
                     return;
 
-                addedSpeedX = Acceleration * Time.deltaTime;
+                addedSpeedX = acceleration * Time.deltaTime;
                 break;
 
             default:
@@ -71,8 +76,19 @@ public class Player : MonoBehaviour
 
     private void Decelerate()
     {
-        var newVelocityX = RB.velocity.x * DecelerationMultiplier;
+        var newVelocityX = RB.velocity.x * decelerationMultiplier;
         RB.velocity = new Vector2(newVelocityX, RB.velocity.y);
+    }
+
+    public void Shoot()
+    {
+        gun.Shoot();
+    }
+
+    public void Deactivate()
+    {
+        gun.Reset();
+        gameObject.SetActive(false);
     }
 
     public void Terminate()

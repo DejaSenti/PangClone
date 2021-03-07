@@ -12,6 +12,11 @@ public class Timer : MonoBehaviour
 
     private void Awake()
     {
+        if (TimerElapsedEvent == null)
+        {
+            TimerElapsedEvent = new UnityEvent();
+        }
+        
         ResetTimer();
     }
 

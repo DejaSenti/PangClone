@@ -10,8 +10,6 @@ public class PlayerController
     {
         Player = player;
         this.playerInput = playerInput;
-
-        Player.Gun.Initialize(Player.ID);
     }
 
     public void SetPlayerPosition(Vector3 position)
@@ -26,8 +24,7 @@ public class PlayerController
 
     public void DeactivatePlayer()
     {
-        Player.gameObject.SetActive(false);
-        Player.Gun.Reset();
+        Player.Deactivate();
     }
 
     public void Update()
@@ -41,7 +38,7 @@ public class PlayerController
 
         if (playerInput.IsShootKeyDown())
         {
-            Player.Gun.Shoot();
+            Player.Shoot();
         }
     }
 

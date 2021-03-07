@@ -208,10 +208,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7522d9019a6c1804db1a3e1586e6a724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 0
+  acceleration: 30
+  maxSpeed: 5
+  decelerationMultiplier: 0.8
+  gun: {fileID: 9188483511193195281}
   RB: {fileID: 9188483511493465920}
-  Gun: {fileID: 9188483511193195281}
-  Acceleration: 50
-  MaxSpeed: 6
-  DecelerationMultiplier: 0.9
   sprite: {fileID: 9188483511493465982}

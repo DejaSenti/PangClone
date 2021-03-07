@@ -199,12 +199,6 @@ public class GameController : MonoBehaviour
         overlayController.Terminate();
         levelManager.Terminate();
 
-#if UNITY_ANDROID
-        SceneManager.LoadScene(GameScenes.MAIN_MENU_ANDROID);
-#endif
-
-#if UNITY_STANDALONE_WIN
         SceneManager.LoadScene(GameScenes.MAIN_MENU);
-#endif
     }
 }
